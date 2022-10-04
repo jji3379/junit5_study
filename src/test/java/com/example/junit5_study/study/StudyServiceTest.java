@@ -4,8 +4,10 @@ import com.example.junit5_study.domain.Member;
 import com.example.junit5_study.domain.Study;
 import com.example.junit5_study.member.MemberService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,6 +47,7 @@ class StudyServiceTest  {
      * BeforeAll 을 사용하는 메소드는 static 으로 정의해 주어야 한다.
      */
     @BeforeAll
+    @DisplayName("기본 객체 세팅")
     static void objectSetting(@Mock MemberService memberService, @Mock StudyRepository studyRepository) {
         studyService = new StudyService(memberService, studyRepository);
         assertNotNull(studyService);
@@ -57,6 +60,7 @@ class StudyServiceTest  {
     }
 
     @Test
+    @DisplayName("Mock Stubbing")
     void createStudyService() {
         /**
          * MemberService 와 StudyRepository 는 아무것도 구현되어 있지 않은 인터페이스 이다.
@@ -90,6 +94,7 @@ class StudyServiceTest  {
     }
 
     @Test
+    @DisplayName("각 호출마다 리턴 다르게 및 예외 던지기")
     void createStudyService2() {
         // 처음 호출시에는 member 리턴
         // 두번째 호출시에는 예외
@@ -112,6 +117,7 @@ class StudyServiceTest  {
     }
 
     @Test
+    @DisplayName("Stubbing Quiz")
     void StubbingQuiz() {
         // TODO memberService 객체에 findById 메소드를 1L 값으로 호출하면 member 객체를 리턴하도록 Stubbing
         when(memberService.findById(1L)).thenReturn(Optional.of(member));
@@ -119,6 +125,19 @@ class StudyServiceTest  {
 
         // TODO studyRepository 객체에 save 메소드를 study 객체로 호출하면 study 객체 그대로 리턴하도록 Stubbing
         when(studyRepository.save(study)).thenReturn(study);
+    }
 
+    @Test
+    @DisplayName("호출 수, 순서 검증")
+    void verifyAndOrder() {
+//        studyService.createNewStudy(1L, study);
+//        verify(memberService, times(1)).notify(study);
+        // 어떤한 인터렉션도 일어나면 안 된다.
+//        verifyNoInteractions(memberService);
+//        verify(memberService, times(1)).notify(member);
+//        InOrder inOrder = inOrder(memberService);
+//        inOrder.verify(memberService).notify(study);
+//        inOrder.verify(memberService).notify(member);
+//        verify(memberService, never()).validate(any());
     }
 }
