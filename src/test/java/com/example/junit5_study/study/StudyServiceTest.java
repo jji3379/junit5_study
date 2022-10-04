@@ -3,6 +3,7 @@ package com.example.junit5_study.study;
 import com.example.junit5_study.domain.Member;
 import com.example.junit5_study.domain.Study;
 import com.example.junit5_study.member.MemberService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,6 +36,25 @@ class StudyServiceTest  {
      * void createStudyService(@Mock MemberSerivce memberSerivce, @Mock StudyRepository studyRepository)
      * 형식으로도 Mock 작성이 가능하다.
      */
+    static Member member;
+    static Study study;
+
+    static StudyService studyService;
+
+    /**
+     * BeforeAll 을 사용하는 메소드는 static 으로 정의해 주어야 한다.
+     */
+    @BeforeAll
+    static void objectSetting(@Mock MemberService memberService, @Mock StudyRepository studyRepository) {
+        studyService = new StudyService(memberService, studyRepository);
+        assertNotNull(studyService);
+
+        member = new Member();
+        member.setId(1L);
+        member.setEmail("keesun@email.com");
+
+        study = new Study(10, "java");
+    }
 
     @Test
     void createStudyService() {
@@ -46,13 +66,6 @@ class StudyServiceTest  {
          *   StudyRepository studyRepository = Mockito.mock(StudyRepository.class);
          */
 
-        StudyService studyService = new StudyService(memberService, studyRepository);
-        assertNotNull(studyService);
-
-        Member member = new Member();
-        member.setId(1L);
-        member.setEmail("keesun@email.com");
-
         // Stubbing
         /**
          * 해당 값일 때 어떠한 값을 반환해라 => Stubbing
@@ -60,8 +73,6 @@ class StudyServiceTest  {
         // Mockito.when -> static 변수로 저장 하면 when 사용 가능
         // any -> ArgumentMatchers.any;
         when(memberService.findById(any())).thenReturn(Optional.of(member));
-
-        Study study = new Study(10, "java");
 
         assertEquals("keesun@email.com", memberService.findById(1L).get().getEmail());
         assertEquals("keesun@email.com", memberService.findById(2L).get().getEmail());
@@ -80,13 +91,6 @@ class StudyServiceTest  {
 
     @Test
     void createStudyService2() {
-        StudyService studyService = new StudyService(memberService, studyRepository);
-        assertNotNull(studyService);
-
-        Member member = new Member();
-        member.setId(1L);
-        member.setEmail("keesun@email.com");
-
         // 처음 호출시에는 member 리턴
         // 두번째 호출시에는 예외
         // 세번째 호출시에는 empty
@@ -109,13 +113,6 @@ class StudyServiceTest  {
 
     @Test
     void StubbingQuiz() {
-        StudyService studyService = new StudyService(memberService, studyRepository);
-        assertNotNull(studyService);
-
-        Member member = new Member();
-        member.setId(1L);
-        member.setEmail("keesun@email.com");
-
         // TODO memberService 객체에 findById 메소드를 1L 값으로 호출하면 member 객체를 리턴하도록 Stubbing
         when(memberService.findById(1L)).thenReturn(Optional.of(member));
         Study study = new Study(10, "java");
